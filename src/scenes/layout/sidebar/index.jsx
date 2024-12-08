@@ -22,7 +22,7 @@ const SideBar = () => {
   const { toggled, setToggled } = useContext(ToggledContext);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const userString = sessionStorage.getItem('user');
+  const userString = localStorage.getItem('user');
   const user = JSON.parse(userString);
 
   return (

@@ -22,7 +22,6 @@ export const Login = () => {
 
   const handleLoginSuccess = async (response) => {
     const { credential } = response;
-    console.log(response);
     setLoading(true);
     try {
       const res = await axios.post('http://localhost:11111/auth/googleAuth', {
@@ -31,7 +30,7 @@ export const Login = () => {
 
       const { token, user } = res.data;
       login(token);
-      sessionStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('user', JSON.stringify(user));
 
       setLoading(false);
       nav('/');

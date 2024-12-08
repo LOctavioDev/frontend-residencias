@@ -29,6 +29,7 @@ const ConfirmationDialog = ({
         <Button
           onClick={onClose}
           color="primary"
+          variant="contained"
         >
           {cancelText}
         </Button>
