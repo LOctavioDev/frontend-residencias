@@ -12,6 +12,7 @@ import {
 import { Google } from '@mui/icons-material';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../config';
 
 export const Login = () => {
   const { login } = useContext(AuthContext);
@@ -24,7 +25,7 @@ export const Login = () => {
     const { credential } = response;
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:11111/auth/googleAuth', {
+      const res = await axios.post(`${API_URL}auth/googleAuth`, {
         tokenId: credential,
       });
 

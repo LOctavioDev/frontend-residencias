@@ -13,7 +13,7 @@ const BarChart = ({ isDashboard = false }) => {
 
   const fetchData = async () => {
     try {
-      const response = await api.get('/api/students/jobType'); 
+      const response = await api.get('api/students/jobType'); 
       const transformedData = response.data.map((item) => ({
         type: item.jobType,
         count: item.count,

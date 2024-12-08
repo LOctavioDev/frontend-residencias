@@ -11,10 +11,10 @@ const LineChart = ({ isDashboard = false }) => {
 
   const [data, setData] = useState([]);
 
-  // Función para obtener los datos del servidor
+
   const fetchData = async () => {
     try {
-      const response = await api.get('/api/students/generation');
+      const response = await api.get('api/students/generation');
 
       // Transformar los datos en el formato adecuado
       const transformedData = response.data.map(item => ({

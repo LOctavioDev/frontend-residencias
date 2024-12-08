@@ -12,7 +12,7 @@ const BarChart = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await api.get('/api/students/generation');
+        const response = await api.get('api/students/generation');
         const formattedData = formatDataForBarChart(response.data);
         setData(formattedData);
       } catch (error) {

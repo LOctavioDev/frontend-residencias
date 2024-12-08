@@ -12,7 +12,7 @@ const PieChart = () => {
 
   const fetchData = async () => {
     try {
-      const response = await api.get('/api/students/city');
+      const response = await api.get('api/students/city');
 
       const transformedData = response.data.map((item) => ({
         id: item._id,

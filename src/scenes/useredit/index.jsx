@@ -67,7 +67,7 @@ const UserEdit = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await api.get(`/api/${control_number}`);
+        const response = await api.get(`api/${control_number}`);
         setUserData(response.data);
       } catch (err) {
         setError('Error al cargar los datos del usuario.');
