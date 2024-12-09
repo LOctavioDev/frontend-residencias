@@ -14,20 +14,23 @@ import { convertDateToUnix } from '../../services/utils';
 import api from '../../services/apiService';
 import {
   activityOptions,
-  jobTypeOptions,
+  institucionOptions,
   employmentStatusOptions,
-  sectorCategoryOptions,
+  sectorOptions,
   contactSourceOptions,
   participationTypeOptions,
+  activites,
 } from '../../services/Titles';
 
 const initialValues = {
   controlNumber: '',
+  career: '',
   firstName: '',
   lastName: '',
   middleName: '',
   startDate: '',
   endDate: '',
+  email: '',
   activity: '',
   companyName: '',
   city: '',
@@ -35,33 +38,41 @@ const initialValues = {
   state: '',
   position: '',
   yearsInPosition: '',
-  jobType: '',
-  employmentStatus: '',
-  sectorCategory: '',
-  sectorType: '',
-  participation: '',
+  hierarchical_level: '',
+  working_condition: '',
+  sector: '',
+  institution: '',
+  profile: '',
   contactSource: '',
 };
 
 const checkoutSchema = yup.object().shape({
   controlNumber: yup.string().required('Número de control es requerido'),
+  career: yup.string().required('Carrera es requerida'),
   firstName: yup.string().required('Nombre es requerido'),
   lastName: yup.string().required('Apellido es requerido'),
   middleName: yup.string().required('Apellido es requerido'),
   startDate: yup.date().nullable().required('Fecha de inicio es requerida'),
   endDate: yup.date().nullable().required('Fecha de fin es requerida'),
+  email: yup
+    .string()
+    .email('Correo electronico no válido')
+    .required('Correo electrónico es requerido'),
   activity: yup.string().required('Actividad es requerida'),
   companyName: yup.string().required('Nombre de la empresa es requerido'),
   city: yup.string().required('Ciudad es requerida'),
   municipality: yup.string().required('Municipio es requerido'),
   state: yup.string().required('Estado es requerido'),
   position: yup.string().required('Posición es requerida'),
-  yearsInPosition: yup.number().required('Años en posición es requerido'),
-  jobType: yup.string().required('Tipo de trabajo es requerido'),
-  employmentStatus: yup.string().required('Estado de empleo es requerido'),
-  sectorCategory: yup.string().required('Categoría de sector es requerida'),
-  sectorType: yup.string().required('Tipo de sector es requerido'),
-  participation: yup.string().required('Participación es requerida'),
+  yearsInPosition: yup
+    .number()
+    .required('Años en posición es requerido')
+    .min(0, 'El número de años en antiguedad debe ser mayor o igual a 0'),
+  hierarchical_level: yup.string().required('Nivel jerárquico es requerido'),
+  working_condition: yup.string().required('Condición de trabajo es requerida'),
+  sector: yup.string().required('Sector es requerida'),
+  institution: yup.string().required('Institución es requerida'),
+  profile: yup.string().required('Perfil es requerido'),
   contactSource: yup.string().required('Fuente de contacto es requerida'),
 });
 
@@ -75,6 +86,7 @@ const StudentForm = () => {
     try {
       const payload = {
         control_number: values.controlNumber,
+        career: values.career,
         name: {
           first: values.firstName,
           last: values.lastName,
@@ -84,6 +96,7 @@ const StudentForm = () => {
           startDate: convertDateToUnix(values.startDate),
           endDate: convertDateToUnix(values.endDate),
         },
+        email: values.email,
         activity: {
           activities: [values.activity],
         },
@@ -96,30 +109,28 @@ const StudentForm = () => {
           },
           position: values.position,
           years_in_position: values.yearsInPosition,
-          job_type: values.jobType,
+          hierarchical_level: values.hierarchical_level,
         },
-        employment_status: {
-          type: [values.employmentStatus],
+        working_condition: {
+          type: values.working_condition,
         },
-        sector: {
-          category: values.sectorCategory,
-          type: values.sectorType,
-        },
-        participation: values.participation,
+        sector: values.sector,
+        institution: values.institution,
+        profile: values.profile,
         contact_source: values.contactSource,
       };
 
+      console.log(payload);
       const response = await api.post('/api', payload);
-      console.log('Student created:', response.data);
 
-      setSnackbarMessage('Student created successfully!');
+      setSnackbarMessage('Egresado creado con éxito!');
       setSnackbarSeverity('success');
       setOpenSnackbar(true);
 
       actions.resetForm({ values: initialValues });
     } catch (error) {
-      console.error('Error creating student:', error);
-      setSnackbarMessage('Error creating student.');
+      console.error('Error al crear el estudiante:', error);
+      setSnackbarMessage('Error al crear el estudiant.');
       setSnackbarSeverity('error');
       setOpenSnackbar(true);
     }
@@ -127,7 +138,7 @@ const StudentForm = () => {
 
   return (
     <Box m="20px">
-      <h1>Crea un Estudiante</h1>
+      <h1>Crea un egresado</h1>
       <Formik
         onSubmit={handleFormSubmit}
         initialValues={initialValues}
@@ -155,6 +166,18 @@ const StudentForm = () => {
                 value={values.controlNumber}
                 error={touched.controlNumber && Boolean(errors.controlNumber)}
                 helperText={touched.controlNumber && errors.controlNumber}
+                sx={{ gridColumn: 'span 4' }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                label="Carrera"
+                name="career"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.career}
+                error={touched.career && Boolean(errors.career)}
+                helperText={touched.career && errors.career}
                 sx={{ gridColumn: 'span 4' }}
               />
               <TextField
@@ -191,9 +214,10 @@ const StudentForm = () => {
                 value={values.middleName}
                 sx={{ gridColumn: 'span 2' }}
               />
+
               <TextField
                 name="startDate"
-                label="Fecha de Inicio"
+                label="Fecha de ingreso"
                 type="date"
                 value={values.startDate}
                 onChange={handleChange}
@@ -205,7 +229,7 @@ const StudentForm = () => {
               />
               <TextField
                 name="endDate"
-                label="Fecha de Fin"
+                label="Fecha de egreso"
                 type="date"
                 value={values.endDate}
                 onChange={handleChange}
@@ -218,7 +242,20 @@ const StudentForm = () => {
               <TextField
                 fullWidth
                 variant="filled"
-                label="Actividad"
+                label="Correo Electronico"
+                type="email"
+                name="email"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.email}
+                error={touched.email && Boolean(errors.email)}
+                helperText={touched.email && errors.email}
+                sx={{ gridColumn: 'span 4' }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                label="Actividad a la que se dedica actualmente"
                 name="activity"
                 onBlur={handleBlur}
                 onChange={handleChange}
@@ -228,7 +265,7 @@ const StudentForm = () => {
                 helperText={touched.activity && errors.activity}
                 sx={{ gridColumn: 'span 4' }}
               >
-                {activityOptions.map((option) => (
+                {activites.map((option) => (
                   <MenuItem
                     key={option.value}
                     value={option.value}
@@ -288,7 +325,7 @@ const StudentForm = () => {
               <TextField
                 fullWidth
                 variant="filled"
-                label="Posición"
+                label="Puesto"
                 name="position"
                 onBlur={handleBlur}
                 onChange={handleChange}
@@ -300,7 +337,7 @@ const StudentForm = () => {
               <TextField
                 fullWidth
                 variant="filled"
-                label="Años en posición"
+                label="antigüedad"
                 name="yearsInPosition"
                 type="number"
                 onBlur={handleBlur}
@@ -313,17 +350,17 @@ const StudentForm = () => {
               <TextField
                 fullWidth
                 variant="filled"
-                label="Tipo de trabajo"
-                name="jobType"
+                label="Nivel jerárquico"
+                name="hierarchical_level"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 select
-                value={values.jobType}
-                error={touched.jobType && Boolean(errors.jobType)}
-                helperText={touched.jobType && errors.jobType}
+                value={values.hierarchical_level}
+                error={touched.hierarchical_level && Boolean(errors.hierarchical_level)}
+                helperText={touched.hierarchical_level && errors.hierarchical_level}
                 sx={{ gridColumn: 'span 2' }}
               >
-                {jobTypeOptions.map((option) => (
+                {activityOptions.map((option) => (
                   <MenuItem
                     key={option.value}
                     value={option.value}
@@ -335,14 +372,14 @@ const StudentForm = () => {
               <TextField
                 fullWidth
                 variant="filled"
-                label="Estado de empleo"
-                name="employmentStatus"
+                label="Condición de trabajo"
+                name="working_condition"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 select
-                value={values.employmentStatus}
-                error={touched.employmentStatus && Boolean(errors.employmentStatus)}
-                helperText={touched.employmentStatus && errors.employmentStatus}
+                value={values.working_condition}
+                error={touched.working_condition && Boolean(errors.working_condition)}
+                helperText={touched.working_condition && errors.working_condition}
                 sx={{ gridColumn: 'span 4' }}
               >
                 {employmentStatusOptions.map((option) => (
@@ -357,17 +394,17 @@ const StudentForm = () => {
               <TextField
                 fullWidth
                 variant="filled"
-                label="Categoría de sector"
-                name="sectorCategory"
+                label="Sector"
+                name="sector"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 select
-                value={values.sectorCategory}
-                error={touched.sectorCategory && Boolean(errors.sectorCategory)}
-                helperText={touched.sectorCategory && errors.sectorCategory}
+                value={values.sector}
+                error={touched.sector && Boolean(errors.sector)}
+                helperText={touched.sector && errors.sector}
                 sx={{ gridColumn: 'span 2' }}
               >
-                {sectorCategoryOptions.map((option) => (
+                {sectorOptions.map((option) => (
                   <MenuItem
                     key={option.value}
                     value={option.value}
@@ -379,26 +416,36 @@ const StudentForm = () => {
               <TextField
                 fullWidth
                 variant="filled"
-                label="Tipo de sector"
-                name="sectorType"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.sectorType}
-                error={touched.sectorType && Boolean(errors.sectorType)}
-                helperText={touched.sectorType && errors.sectorType}
-                sx={{ gridColumn: 'span 2' }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                label="Participación"
-                name="participation"
+                label="Institución"
+                name="institution"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 select
-                value={values.participation}
-                error={touched.participation && Boolean(errors.participation)}
-                helperText={touched.participation && errors.participation}
+                value={values.institution}
+                error={touched.institution && Boolean(errors.institution)}
+                helperText={touched.institution && errors.institution}
+                sx={{ gridColumn: 'span 2' }}
+              >
+                {institucionOptions.map((option) => (
+                  <MenuItem
+                    key={option.value}
+                    value={option.value}
+                  >
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <TextField
+                fullWidth
+                variant="filled"
+                label="Perfil"
+                name="profile"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                select
+                value={values.profile}
+                error={touched.profile && Boolean(errors.profile)}
+                helperText={touched.profile && errors.profile}
                 sx={{ gridColumn: 'span 4' }}
               >
                 {participationTypeOptions.map((option) => (
@@ -413,7 +460,7 @@ const StudentForm = () => {
               <TextField
                 fullWidth
                 variant="filled"
-                label="Fuente de contacto"
+                label="Trabajo obtenido de"
                 name="contactSource"
                 onBlur={handleBlur}
                 onChange={handleChange}
@@ -444,7 +491,7 @@ const StudentForm = () => {
                 color="secondary"
                 variant="contained"
               >
-                Crear Estudiante
+                Crear egresado
               </Button>
             </Box>
           </form>

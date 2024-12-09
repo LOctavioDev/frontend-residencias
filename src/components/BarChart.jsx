@@ -13,11 +13,25 @@ const BarChart = ({ isDashboard = false }) => {
 
   const fetchData = async () => {
     try {
-      const response = await api.get('api/students/jobType'); 
-      const transformedData = response.data.map((item) => ({
-        type: item.jobType,
-        count: item.count,
-      }));
+      const response = await api.get('api/students/activity');
+      const transformedData = [
+        {
+          type: 'Trabaja',
+          cantidad: response.data.working || 0,
+        },
+        {
+          type: 'No trabaja',
+          cantidad: response.data.notWorking || 0,
+        },
+        {
+          type: 'Estudia',
+          cantidad: response.data.studying || 0,
+        },
+        {
+          type: 'No estudia ni trabaja',
+          cantidad: response.data.notStudying || 0,
+        },
+      ];
       setData(transformedData);
     } catch (error) {
       console.error('Error fetching data: ', error);
@@ -59,8 +73,8 @@ const BarChart = ({ isDashboard = false }) => {
           },
         },
       }}
-      keys={['count']}
-      indexBy="type" // Mantén 'type' ya que es el nuevo campo
+      keys={['cantidad']}
+      indexBy="type" // Usamos "type" porque es el nombre del campo que contiene las categorías
       margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
       padding={0.3}
       valueScale={{ type: 'linear' }}
@@ -96,7 +110,7 @@ const BarChart = ({ isDashboard = false }) => {
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
-        legend: isDashboard ? undefined : 'Tipo de Empleo',
+        legend: isDashboard ? undefined : 'Tipo de Actividad',
         legendPosition: 'middle',
         legendOffset: 32,
       }}

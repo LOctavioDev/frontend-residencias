@@ -5,6 +5,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import api from "../../services/apiService";
 import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
+import Loader from "../../components/Loader";
 
 const Team = () => {
   const theme = useTheme();
@@ -80,12 +81,12 @@ const Team = () => {
   }, []);
 
   if (loading) {
-    return <Typography>Loading...</Typography>;
+    return <Loader loading={loading} />;
   }
 
   return (
     <Box m="20px">
-      <Header title="Alumnos" subtitle="Datos de los alumnos" />
+      <Header title="Egresados" subtitle="Datos de los egresados" />
       <Box
         mt="40px"
         height="75vh"

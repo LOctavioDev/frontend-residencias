@@ -133,12 +133,6 @@ const SideBar = () => {
             },
           }}
         >
-          <Item
-            title="Dashboard"
-            path="/"
-            colors={colors}
-            icon={<DashboardOutlined />}
-          />
         </Menu>
         <Typography
           variant="h6"
@@ -159,16 +153,16 @@ const SideBar = () => {
           }}
         >
           <Item
-            title="Alumnos"
+            title="Dashboard"
+            path="/"
+            colors={colors}
+            icon={<DashboardOutlined />}
+          />
+          <Item
+            title="Egresados"
             path="/team"
             colors={colors}
             icon={<PeopleAltOutlined />}
-          />
-          <Item
-            title="información de contacto"
-            path="/contacts"
-            colors={colors}
-            icon={<ContactsOutlined />}
           />
         </Menu>
         <Typography
@@ -190,7 +184,7 @@ const SideBar = () => {
           }}
         >
           <Item
-            title="Crear alumno"
+            title="Crear egresado"
             path="/form"
             colors={colors}
             icon={<PersonOutlined />}

@@ -5,8 +5,8 @@ const Bar = () => {
   return (
     <Box m="20px">
       <Header
-        title="Análisis de Tipos de Empleo"
-        subtitle="Gráfica de Barras que muestra la distribución de estudiantes por tipo de empleo."
+        title="Análisis de Actividades de los Egresados"
+        subtitle="Gráfica de Barras que muestra la distribución de egresados según si trabajan, estudian o ambas."
       />
       <Box height="75vh">
         <BarChart />
@@ -16,4 +16,3 @@ const Bar = () => {
 };
 
 export default Bar;
-    
