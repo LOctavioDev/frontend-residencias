@@ -20,6 +20,7 @@ import {
   contactSourceOptions,
   participationTypeOptions,
   activites,
+  updateAtOptions,
 } from '../../services/Titles';
 
 const initialValues = {
@@ -39,11 +40,18 @@ const initialValues = {
   position: '',
   yearsInPosition: '',
   hierarchical_level: '',
+  startDateC: '',
+  endDateC: '',
+  name: '',
+  startDateH: '',
+  endDateH: '',
   working_condition: '',
   sector: '',
   institution: '',
   profile: '',
   contactSource: '',
+  otherSource: '',
+  updatedAt: '',
 };
 
 const checkoutSchema = yup.object().shape({
@@ -66,14 +74,23 @@ const checkoutSchema = yup.object().shape({
   position: yup.string().required('Posición es requerida'),
   yearsInPosition: yup
     .number()
-    .required('Años en posición es requerido')
     .min(0, 'El número de años en antiguedad debe ser mayor o igual a 0'),
   hierarchical_level: yup.string().required('Nivel jerárquico es requerido'),
   working_condition: yup.string().required('Condición de trabajo es requerida'),
   sector: yup.string().required('Sector es requerida'),
   institution: yup.string().required('Institución es requerida'),
   profile: yup.string().required('Perfil es requerido'),
-  contactSource: yup.string().required('Fuente de contacto es requerida'),
+  contactSource: yup.string().required('Selecciona una fuente'),
+  otherSource: yup
+    .string()
+    .nullable()
+    .when('contactSource', (contactSource, schema) => {
+      if (contactSource === 'otro') {
+        return schema.required('Especifica la fuente de trabajo');
+      }
+      return schema.notRequired();
+    }),
+  updatedAt: yup.string().nullable().required('Fecha de actualización es requerida'),
 });
 
 const StudentForm = () => {
@@ -81,6 +98,11 @@ const StudentForm = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
   const isNonMobile = useMediaQuery('(min-width:600px)');
+  const [isHistory, setIsHistory] = useState(false);
+
+  const handleHistory = () => {
+    setIsHistory(!isHistory);
+  };
 
   const handleFormSubmit = async (values, actions) => {
     try {
@@ -110,14 +132,25 @@ const StudentForm = () => {
           position: values.position,
           years_in_position: values.yearsInPosition,
           hierarchical_level: values.hierarchical_level,
+          startDateC: convertDateToUnix(values.startDateC),
+          endDateC: convertDateToUnix(values.endDateC),
         },
+        companyHistory: [
+          {
+            name: values.name,
+            startDateH: convertDateToUnix(values.startDate),
+            endDateH: convertDateToUnix(values.endDate),
+          },
+        ],
         working_condition: {
           type: values.working_condition,
         },
         sector: values.sector,
         institution: values.institution,
         profile: values.profile,
-        contact_source: values.contactSource,
+        contact_source:
+          values.contactSource === 'otro' ? values.otherSource : values.contactSource,
+        updatedAt: values.updatedAt,
       };
 
       console.log(payload);
@@ -144,7 +177,15 @@ const StudentForm = () => {
         initialValues={initialValues}
         validationSchema={checkoutSchema}
       >
-        {({ values, errors, touched, handleBlur, handleChange, handleSubmit }) => (
+        {({
+          values,
+          errors,
+          touched,
+          handleBlur,
+          handleChange,
+          handleSubmit,
+          setFieldValue,
+        }) => (
           <form onSubmit={handleSubmit}>
             <Box
               display="grid"
@@ -217,7 +258,7 @@ const StudentForm = () => {
 
               <TextField
                 name="startDate"
-                label="Fecha de ingreso"
+                label="Fecha de ingreso al ITSH"
                 type="date"
                 value={values.startDate}
                 onChange={handleChange}
@@ -229,7 +270,7 @@ const StudentForm = () => {
               />
               <TextField
                 name="endDate"
-                label="Fecha de egreso"
+                label="Fecha de egreso del ITSH"
                 type="date"
                 value={values.endDate}
                 onChange={handleChange}
@@ -463,7 +504,12 @@ const StudentForm = () => {
                 label="Trabajo obtenido de"
                 name="contactSource"
                 onBlur={handleBlur}
-                onChange={handleChange}
+                onChange={(e) => {
+                  handleChange(e);
+                  if (e.target.value === 'otro') {
+                    setFieldValue('otherSource', '');
+                  }
+                }}
                 select
                 value={values.contactSource}
                 error={touched.contactSource && Boolean(errors.contactSource)}
@@ -479,6 +525,97 @@ const StudentForm = () => {
                   </MenuItem>
                 ))}
               </TextField>
+
+              {values.contactSource === 'otro' && (
+                <TextField
+                  fullWidth
+                  variant="filled"
+                  label="Especifica la fuente de trabajo"
+                  name="otherSource"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.otherSource}
+                  error={touched.otherSource && Boolean(errors.otherSource)}
+                  helperText={touched.otherSource && errors.otherSource}
+                  sx={{ gridColumn: 'span 2' }}
+                />
+              )}
+
+              <TextField
+                fullWidth
+                variant="filled"
+                label="Fecha de actualización"
+                name="updatedAt"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                select
+                value={values.updatedAt}
+                error={touched.updatedAt && Boolean(errors.updatedAt)}
+                helperText={touched.updatedAt && errors.updatedAt}
+                sx={{ gridColumn: 'span 4' }}
+              >
+                {updateAtOptions.map((option) => (
+                  <MenuItem
+                    key={option.value}
+                    value={option.value}
+                  >
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+
+              <Button
+                onClick={handleHistory}
+                color="secondary"
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Agregar al historial
+              </Button>
+
+              {isHistory && (
+                <>
+                  <TextField
+                    fullWidth
+                    variant="filled"
+                    name="name"
+                    label="Nombre de la anterior empresa"
+                    type="text"
+                    value={values.name}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    sx={{ gridColumn: 'span 4' }}
+                  />
+
+                  <TextField
+                    name="startDateH"
+                    label="Fecha de inicio de la empresa"
+                    type="date"
+                    value={values.startDateH}
+                    onChange={handleChange}
+                    error={touched.startDateH && Boolean(errors.startDateH)}
+                    helperText={touched.startDateH && errors.startDateH}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    sx={{ gridColumn: 'span 2' }}
+                  />
+
+                  <TextField
+                    name="endDateH"
+                    label="Fecha de fin de la empresa"
+                    type="date"
+                    value={values.endDateH}
+                    onChange={handleChange}
+                    error={touched.endDateH && Boolean(errors.endDateH)}
+                    helperText={touched.endDateH && errors.endDateH}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    sx={{ gridColumn: 'span 2' }}
+                  />
+                </>
+              )}
             </Box>
 
             <Box

@@ -15,6 +15,7 @@ import {
 import { Login } from "./components/Login";
 import UserEdit from "./scenes/useredit";
 import PrivateRouter from "./services/PrivateRouter";
+import {Historial} from "./scenes/useredit/historial";
 
 const AppRouter = () => {
   return (
@@ -23,7 +24,7 @@ const AppRouter = () => {
         <Route path="/login" element={<Login />} />
         <Route element = {<PrivateRouter />}>
           <Route path="/" element={<App />}>
-            <Route path="/" element={<Dashboard />} />
+            <Route path="/" element={<Team />} />
             <Route path="/team" element={<Team />} />
             <Route path="/contacts" element={<Contacts />} />
             <Route path="/invoices" element={<Invoices />} />
@@ -32,6 +33,7 @@ const AppRouter = () => {
             <Route path="/pie" element={<Pie />} />
             <Route path="/stream" element={<Stream />} />
             <Route path="/useredit/:control_number" element={<UserEdit />} />
+            <Route path="/companyhistory/:control_number" element={<Historial />} />
           </Route>
         </Route>
       </Routes>

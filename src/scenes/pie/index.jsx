@@ -7,6 +7,7 @@ const Pie = () => {
       <Header
         title="Distribución de Estudiantes por Ciudad"
         subtitle="Este gráfico de pastel muestra la cantidad de estudiantes que se han graduado y que actualmente trabajan en diferentes ciudades. Permite visualizar la concentración de graduados en cada ubicación y entender mejor la dispersión geográfica de nuestros egresados."
+        
       />
       <Box height="75vh">
         <PieChart />

@@ -26,6 +26,16 @@ const editUserSchema = yup.object().shape({
   institution: yup.string().required('Institución es requerida'),
   profile: yup.string().required('Perfil es requerido'),
   contactSource: yup.string().required('Fuente de contacto es requerida'),
+  otherSource: yup
+    .string()
+    .nullable()
+    .when('contactSource', (contactSource, schema) => {
+      if (contactSource === 'otro') {
+        return schema.required('Especifica la fuente de trabajo');
+      }
+      return schema.notRequired();
+    }),
+  updatedAt: yup.string().nullable().required('Fecha de actualización es requerida'),
 });
 
 export default editUserSchema;

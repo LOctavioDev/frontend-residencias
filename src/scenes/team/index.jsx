@@ -99,10 +99,10 @@ const Team = () => {
             border: "none",
           },
           "& .name-column--cell": {
-            color: colors.greenAccent[300],
+            color: colors.primary[100],
           },
           "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: colors.blueAccent[700],
+            backgroundColor: colors.orange[500],
             borderBottom: "none",
           },
           "& .MuiDataGrid-virtualScroller": {
@@ -110,10 +110,10 @@ const Team = () => {
           },
           "& .MuiDataGrid-footerContainer": {
             borderTop: "none",
-            backgroundColor: colors.blueAccent[700],
+            backgroundColor: colors.orange[500],
           },
           "& .MuiCheckbox-root": {
-            color: `${colors.greenAccent[200]} !important`,
+            color: `${colors.orange[400]} !important`,
           },
           "& .MuiDataGrid-iconSeparator": {
             color: colors.primary[100],
@@ -126,11 +126,11 @@ const Team = () => {
           initialState={{
             pagination: {
               paginationModel: {
-                pageSize: 10,
+                pageSize: 20,
               },
             },
           }}
-          checkboxSelection
+          // checkboxSelection
         />
       </Box>
     </Box>

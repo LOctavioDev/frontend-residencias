@@ -6,7 +6,31 @@ import api from '../../services/apiService';
 import { convertDateToUnix, convertUnixToDate } from '../../services/utils';
 import editUserSchema from './editUserShcema';
 import ConfirmationDialog from '../../components/ConfirmationDialog';
-import { useMediaQuery, Box, Button, TextField, Snackbar, Alert } from '@mui/material';
+import {
+  useMediaQuery,
+  Box,
+  Button,
+  TextField,
+  Snackbar,
+  Alert,
+  MenuItem,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from '@mui/material';
+import {
+  activites,
+  activityOptions,
+  employmentStatusOptions,
+  contactSourceOptions,
+  institucionOptions,
+  sectorOptions,
+  participationTypeOptions,
+  updateAtOptions,
+} from '../../services/Titles';
 
 const UserEdit = () => {
   const { control_number } = useParams();
@@ -19,6 +43,7 @@ const UserEdit = () => {
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
   const isNonMobile = useMediaQuery('(min-width:600px)');
   const nav = useNavigate();
+  const [contact_source_original, setContactSourceOriginal] = useState('');
 
   const handleEditSubmit = async (values) => {
     setLoading(true);
@@ -56,7 +81,9 @@ const UserEdit = () => {
         sector: values.sector,
         institution: values.institution,
         profile: values.profile,
-        contact_source: values.contactSource,
+        contact_source:
+          values.contactSource === 'otro' ? values.otherSource : values.contactSource,
+        updatedAt: values.updatedAt,
       };
 
       const response = await api.put(`/api/${values.controlNumber}`, payload);
@@ -66,7 +93,7 @@ const UserEdit = () => {
       setOpenSnackbar(true);
 
       setLoading(false);
-      nav('/');
+      window.location.reload();
     } catch (error) {
       console.error('Error al actualizar el usuario:', error);
 
@@ -92,6 +119,8 @@ const UserEdit = () => {
       try {
         const response = await api.get(`api/${control_number}`);
         setUserData(response.data);
+        console.log(response.data);
+        setContactSourceOriginal(response.data.contact_source);
       } catch (err) {
         setError('Error al cargar los datos del usuario.');
         setSnackbarMessage('Error al cargar los datos del usuario.');
@@ -135,18 +164,25 @@ const UserEdit = () => {
           position: userData?.company?.position || '',
           yearsInPosition: userData?.company?.years_in_position || '',
           hierarchical_level: userData?.company?.hierarchical_level || '',
+          startDateC: userData?.company?.startDateC || '',
+          endDateC: userData?.company?.endDateC || '',
+          name: userData?.companyHistory?.name || '',
+          startDateH: userData?.companyHistory?.startDateH || '',
+          endDateH: userData?.companyHistory?.endDateH || '',
           working_condition: userData?.working_condition?.type || '',
           sector: userData?.sector || '',
           institution: userData?.institution || '',
           profile: userData?.profile || '',
           contactSource: userData?.contact_source || '',
+          otherSource: userData?.contact_source || '',
+          updatedAt: userData?.updatedAt || '',
         }}
         validationSchema={editUserSchema}
         onSubmit={(values) => {
           setOpenConfirmDialog(true);
         }}
       >
-        {({ values, handleChange, handleSubmit, errors, touched }) => (
+        {({ values, handleChange, handleSubmit, errors, touched, setFieldValue }) => (
           <form onSubmit={handleSubmit}>
             <Box
               display="grid"
@@ -209,6 +245,28 @@ const UserEdit = () => {
               <TextField
                 fullWidth
                 variant="filled"
+                label="Fecha de inicio de carrera"
+                name="startDate"
+                type="date"
+                value={values.startDate}
+                onChange={(e) => setFieldValue('startDate', e.target.value)}
+                error={touched.startDate && Boolean(errors.startDate)}
+                helperText={touched.startDate && errors.startDate}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                label="Fecha de fin de carrera"
+                name="endDate"
+                type="date"
+                value={values.endDate}
+                onChange={(e) => setFieldValue('endDate', e.target.value)}
+                error={touched.endDate && Boolean(errors.endDate)}
+                helperText={touched.endDate && errors.endDate}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
                 label="Correo"
                 name="email"
                 value={values.email}
@@ -221,11 +279,21 @@ const UserEdit = () => {
                 variant="filled"
                 label="Actividad"
                 name="activity"
-                value={values.activity}
                 onChange={handleChange}
+                select
+                value={values.activity}
                 error={touched.activity && Boolean(errors.activity)}
                 helperText={touched.activity && errors.activity}
-              />
+              >
+                {activites.map((option) => (
+                  <MenuItem
+                    key={option.value}
+                    value={option.value}
+                  >
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
               <TextField
                 fullWidth
                 variant="filled"
@@ -293,9 +361,19 @@ const UserEdit = () => {
                 name="hierarchical_level"
                 value={values.hierarchical_level}
                 onChange={handleChange}
+                select
                 error={touched.hierarchical_level && Boolean(errors.hierarchical_level)}
                 helperText={touched.hierarchical_level && errors.hierarchical_level}
-              />
+              >
+                {activityOptions.map((option) => (
+                  <MenuItem
+                    key={option.value}
+                    value={option.value}
+                  >
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
               <TextField
                 fullWidth
                 variant="filled"
@@ -303,9 +381,19 @@ const UserEdit = () => {
                 name="working_condition"
                 value={values.working_condition}
                 onChange={handleChange}
+                select
                 error={touched.working_condition && Boolean(errors.working_condition)}
                 helperText={touched.working_condition && errors.working_condition}
-              />
+              >
+                {employmentStatusOptions.map((option) => (
+                  <MenuItem
+                    key={option.value}
+                    value={option.value}
+                  >
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
               <TextField
                 fullWidth
                 variant="filled"
@@ -313,9 +401,19 @@ const UserEdit = () => {
                 name="sector"
                 value={values.sector}
                 onChange={handleChange}
+                select
                 error={touched.sector && Boolean(errors.sector)}
                 helperText={touched.sector && errors.sector}
-              />
+              >
+                {sectorOptions.map((option) => (
+                  <MenuItem
+                    key={option.value}
+                    value={option.value}
+                  >
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
               <TextField
                 fullWidth
                 variant="filled"
@@ -323,9 +421,19 @@ const UserEdit = () => {
                 name="institution"
                 value={values.institution}
                 onChange={handleChange}
+                select
                 error={touched.institution && Boolean(errors.institution)}
                 helperText={touched.institution && errors.institution}
-              />
+              >
+                {institucionOptions.map((option) => (
+                  <MenuItem
+                    key={option.value}
+                    value={option.value}
+                  >
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
               <TextField
                 fullWidth
                 variant="filled"
@@ -333,8 +441,26 @@ const UserEdit = () => {
                 name="profile"
                 value={values.profile}
                 onChange={handleChange}
+                select
                 error={touched.profile && Boolean(errors.profile)}
                 helperText={touched.profile && errors.profile}
+              >
+                {participationTypeOptions.map((option) => (
+                  <MenuItem
+                    key={option.value}
+                    value={option.value}
+                  >
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <TextField
+                fullWidth
+                variant="filled"
+                label="Fuente de contacto original"
+                value={contact_source_original}
+                onChange={handleChange}
+                disabled
               />
               <TextField
                 fullWidth
@@ -342,32 +468,68 @@ const UserEdit = () => {
                 label="Fuente de contacto"
                 name="contactSource"
                 value={values.contactSource}
-                onChange={handleChange}
+                onChange={(e) => {
+                  handleChange(e);
+                  if (e.target.value === 'otro') {
+                    setFieldValue('otherSource', userData?.otherSource || '');
+                  } else {
+                    setFieldValue('otherSource', '');
+                  }
+                }}
+                select
                 error={touched.contactSource && Boolean(errors.contactSource)}
                 helperText={touched.contactSource && errors.contactSource}
-              />
+              >
+                {contactSourceOptions.map((option) => (
+                  <MenuItem
+                    key={option.value}
+                    value={option.value}
+                  >
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+
+              {values.contactSource === 'otro' && (
+                <TextField
+                  fullWidth
+                  variant="filled"
+                  label="Especifica la fuente de contacto"
+                  name="otherSource"
+                  onChange={handleChange}
+                  value={values.otherSource}
+                  error={touched.otherSource && Boolean(errors.otherSource)}
+                  helperText={touched.otherSource && errors.otherSource}
+                />
+              )}
+
               <TextField
                 fullWidth
                 variant="filled"
-                label="Fecha de inicio"
-                name="startDate"
-                type="date"
-                value={values.startDate}
-                onChange={(e) => setFieldValue('startDate', e.target.value)}
-                error={touched.startDate && Boolean(errors.startDate)}
-                helperText={touched.startDate && errors.startDate}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                label="Fecha de finalización"
-                name="endDate"
-                type="date"
-                value={values.endDate}
-                onChange={(e) => setFieldValue('endDate', e.target.value)}
-                error={touched.endDate && Boolean(errors.endDate)}
-                helperText={touched.endDate && errors.endDate}
-              />
+                label="Fecha de actualización"
+                name="updatedAt"
+                onChange={handleChange}
+                select
+                value={values.updatedAt}
+                error={touched.updatedAt && Boolean(errors.updatedAt)}
+                helperText={touched.updatedAt && errors.updatedAt}
+              >
+                {updateAtOptions.map((option) => (
+                  <MenuItem
+                    key={option.value}
+                    value={option.value}
+                  >
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <Button
+                onClick={() => nav(`/companyhistory/${control_number}`)}
+                color="secondary"
+                variant="contained"
+              >
+                Ver historial de empresas
+              </Button>
             </Box>
 
             <Box

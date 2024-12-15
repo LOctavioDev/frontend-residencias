@@ -65,15 +65,15 @@ const Navbar = () => {
           sx={{ transition: '.3s ease' }}
         >
           <img
-            style={{ width: '30px', height: '30px', borderRadius: '8px' }}
+            style={{ width: '50px', height: '50px', borderRadius: '8px' }}
             src={logo}
             alt="Argon"
           />
           <Typography
-            variant="h4"
+            variant="h2"
             fontWeight="bold"
             textTransform="capitalize"
-            color={colors.greenAccent[500]}
+            color={colors.orange[500]}
           >
             ITSH
           </Typography>
@@ -99,8 +99,8 @@ const Navbar = () => {
         <IconButton>
           <SettingsOutlined />
         </IconButton>
-        <IconButton>
-          <ExitToApp onClick={() => setConfirmOpen(true)} />
+        <IconButton onClick={() => setConfirmOpen(true)}>
+          <ExitToApp />
         </IconButton>
       </Box>
     </Box>

@@ -60,3 +60,9 @@ export const sectorOptions = [
   { label: 'Terciario', value: 'terciario' },
 
 ]
+
+export const updateAtOptions = [
+  { label: 'contactados laborando', value: 'contactados laborando' },
+  { label: 'actualizados', value: 'actualizados' },
+  { label: 'no contactados ni actualizados', value: 'no contactados ni actualizados' },
+]

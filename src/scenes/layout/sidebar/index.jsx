@@ -110,9 +110,9 @@ const SideBar = () => {
             <Typography
               variant="h6"
               fontWeight="500"
-              color={colors.greenAccent[500]}
+              color={colors.orange[500]}
             >
-              {user.name}
+              {user.name ? user.name : 'Admin'}
             </Typography>
           </Box>
         </Box>
@@ -126,7 +126,7 @@ const SideBar = () => {
           menuItemStyles={{
             button: {
               ':hover': {
-                color: '#868dfb',
+                color: '#ff8533',
                 background: 'transparent',
                 transition: '.4s ease',
               },
@@ -145,19 +145,19 @@ const SideBar = () => {
           menuItemStyles={{
             button: {
               ':hover': {
-                color: '#868dfb',
+                color: '#ff8533',
                 background: 'transparent',
                 transition: '.4s ease',
               },
             },
           }}
         >
-          <Item
+          {/* <Item
             title="Dashboard"
             path="/"
             colors={colors}
             icon={<DashboardOutlined />}
-          />
+          /> */}
           <Item
             title="Egresados"
             path="/team"
@@ -176,7 +176,7 @@ const SideBar = () => {
           menuItemStyles={{
             button: {
               ':hover': {
-                color: '#868dfb',
+                color: '#ff8533',
                 background: 'transparent',
                 transition: '.4s ease',
               },
@@ -201,7 +201,7 @@ const SideBar = () => {
           menuItemStyles={{
             button: {
               ':hover': {
-                color: '#868dfb',
+                color: '#ff8533',
                 background: 'transparent',
                 transition: '.4s ease',
               },
