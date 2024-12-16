@@ -76,6 +76,8 @@ const checkoutSchema = yup.object().shape({
     .number()
     .min(0, 'El número de años en antiguedad debe ser mayor o igual a 0'),
   hierarchical_level: yup.string().required('Nivel jerárquico es requerido'),
+  startDateC: yup.number().nullable().required('Fecha de inicio es requerida'),
+  endDateC: yup.number().nullable().required('Fecha de fin es requerida'),
   working_condition: yup.string().required('Condición de trabajo es requerida'),
   sector: yup.string().required('Sector es requerida'),
   institution: yup.string().required('Institución es requerida'),
@@ -378,7 +380,7 @@ const StudentForm = () => {
               <TextField
                 fullWidth
                 variant="filled"
-                label="antigüedad"
+                label="Antigüedad"
                 name="yearsInPosition"
                 type="number"
                 onBlur={handleBlur}
@@ -410,6 +412,7 @@ const StudentForm = () => {
                   </MenuItem>
                 ))}
               </TextField>
+
               <TextField
                 fullWidth
                 variant="filled"
@@ -625,8 +628,10 @@ const StudentForm = () => {
             >
               <Button
                 type="submit"
-                color="secondary"
+                color="primary"
                 variant="contained"
+                sx={{ mr: 1 }}
+
               >
                 Crear egresado
               </Button>

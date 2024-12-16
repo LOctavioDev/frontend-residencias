@@ -7,45 +7,19 @@ import api from '../services/apiService';
 const PieChart = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
   const [data, setData] = useState([]);
-
- // Lista de las principales ciudades de México
- const mainCities = [
-  'CDMX',
-  'Guadalajara',
-  'Monterrey',
-  'Puebla',
-  'Mérida',
-  'Tijuana',
-  'León',
-  'Cancún',
-  'Querétaro',
-  'San Luis Potosí',
-  'Aguascalientes',
-  'Toluca',
-  'Chihuahua',
-  'Culiacán',
-  'Saltillo',
-  'Durango',
-  'Veracruz',
-  'Hermosillo',
-  'Pachuca',
-  'Mazatlán',
-];
 
   const fetchData = async () => {
     try {
       const response = await api.get('api/students/city');
       console.log(response.data);
 
-      const filteredData = response.data
-        .filter((item) => mainCities.includes(item._id))
-        .map((item) => ({
-          id: item._id,
-          label: item._id,
-          value: item.count,
-        }));
+      // Mapea los datos de la respuesta para ajustarlos al formato requerido por Nivo
+      const filteredData = response.data.map((item) => ({
+        id: item._id || 'Sin ciudad', // Si el _id es null, lo etiquetamos como "Sin ciudad"
+        label: item._id || 'Sin ciudad',
+        value: item.count,
+      }));
 
       setData(filteredData);
     } catch (error) {

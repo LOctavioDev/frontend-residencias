@@ -14,12 +14,6 @@ import {
   Snackbar,
   Alert,
   MenuItem,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
 } from '@mui/material';
 import {
   activites,
@@ -139,7 +133,7 @@ const UserEdit = () => {
 
   return (
     <Box m="20px">
-      <h1>Ver y Editar Usuario</h1>
+      <h1>Ver y Editar Egresado</h1>
 
       <Formik
         enableReinitialize={true}
@@ -245,7 +239,7 @@ const UserEdit = () => {
               <TextField
                 fullWidth
                 variant="filled"
-                label="Fecha de inicio de carrera"
+                label="Fecha de ingreso al ITSH"
                 name="startDate"
                 type="date"
                 value={values.startDate}
@@ -256,7 +250,7 @@ const UserEdit = () => {
               <TextField
                 fullWidth
                 variant="filled"
-                label="Fecha de fin de carrera"
+                label="Fecha de egreso del ITSH"
                 name="endDate"
                 type="date"
                 value={values.endDate}

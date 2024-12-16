@@ -24,9 +24,9 @@ const BarChart = () => {
   }, []);
 
   const formatDataForBarChart = (studentsData) => {
-    // Formateamos los datos para un gráfico de barras agrupadas
-    return studentsData.map(item => ({
-      year: item._id.year,
+    // Formateamos los datos para el gráfico de barras
+    return studentsData.map((item) => ({
+      year: item._id?.year || 'Sin año', // Etiqueta 'Sin año' para valores null
       númeroDeEstudiantes: item.count, // Cambiamos 'count' por 'númeroDeEstudiantes'
     }));
   };
@@ -34,7 +34,7 @@ const BarChart = () => {
   return (
     <ResponsiveBar
       data={data}
-      keys={['númeroDeEstudiantes']} // Actualizamos la clave
+      keys={['númeroDeEstudiantes']}
       indexBy="year"
       margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
       theme={{
@@ -72,14 +72,16 @@ const BarChart = () => {
         tickRotation: 0,
         legend: 'Años',
         legendOffset: 36,
+        legendPosition: 'middle',
       }}
       axisLeft={{
         orient: 'left',
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
-        legend: 'Número de Estudiantes', // Leyenda del eje Y
+        legend: 'Número de Estudiantes',
         legendOffset: -40,
+        legendPosition: 'middle',
       }}
       colors={{ scheme: 'nivo' }}
       fillOpacity={0.85}

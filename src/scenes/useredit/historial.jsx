@@ -83,7 +83,7 @@ export const Historial = () => {
       }));
 
       handleModalClose();
-      setOpenDialog(false); // Cerramos el modal de confirmación
+      setOpenDialog(false);
     } catch (err) {
       console.error('Error al eliminar la empresa del historial:', err);
       setError('Error al eliminar la empresa del historial.');
@@ -92,15 +92,13 @@ export const Historial = () => {
     }
   };
 
-  // Esta función se llama cuando el usuario cancela la eliminación
   const handleCancelDelete = () => {
-    setOpenDialog(false); // Cerramos el modal de confirmación sin hacer nada
+    setOpenDialog(false);
   };
 
   const handleDelete = (row) => {
-    // Guardamos la empresa seleccionada para la eliminación
     setCompanyToDelete(row);
-    setOpenDialog(true); // Abrimos el modal de confirmación
+    setOpenDialog(true); 
   };
 
   const handleSubmit = async () => {

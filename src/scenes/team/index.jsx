@@ -1,11 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { Box, Typography, useTheme, Button } from "@mui/material";
-import { Header } from "../../components";
-import { DataGrid } from "@mui/x-data-grid";
-import api from "../../services/apiService";
-import { tokens } from "../../theme";
-import { useNavigate } from "react-router-dom";
-import Loader from "../../components/Loader";
+import React, { useEffect, useState } from 'react';
+import {
+  Box,
+  Button,
+  Typography,
+  useTheme,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+
+} from '@mui/material';
+import { Header } from '../../components';
+import { DataGrid } from '@mui/x-data-grid';
+import api from '../../services/apiService';
+import { tokens } from '../../theme';
+import { useNavigate } from 'react-router-dom';
+import Loader from '../../components/Loader';
 
 const Team = () => {
   const theme = useTheme();
@@ -13,46 +23,60 @@ const Team = () => {
   const nav = useNavigate();
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
 
   const columns = [
-    // { field: "id", headerName: "ID" },
     {
-      field: "name",
-      headerName: "Nombre",
+      field: 'name',
+      headerName: 'Nombre',
       flex: 1,
-      cellClassName: "name-column--cell",
-      valueGetter: (params) => `${params.row.name.first} ${params.row.name.last}`, 
+      cellClassName: 'name-column--cell',
+      valueGetter: (params) => `${params.row.name.first} ${params.row.name.last}`,
     },
     {
-      field: "control_number",
-      headerName: "Número de Control",
+      field: 'control_number',
+      headerName: 'Número de Control',
       flex: 1,
     },
     {
-      field: "company",
-      headerName: "Empresa",
+      field: 'company',
+      headerName: 'Empresa',
       flex: 1,
-      valueGetter: (params) => params.row.company.name, 
+      valueGetter: (params) => params.row.company.name,
     },
     {
-      field: "position",
-      headerName: "Posición",
+      field: 'position',
+      headerName: 'Posición',
       flex: 1,
-      valueGetter: (params) => params.row.company.position, 
+      valueGetter: (params) => params.row.company.position,
     },
     {
-      field: "actions",
-      headerName: "Acciones",
-      flex: 0.5,
+      field: 'actions',
+      headerName: 'Acciones',
+      flex: 1,
       renderCell: (params) => (
-        <Button
-          variant="contained"
-          color="primary"
-          size="small"
-          onClick={() => goToStudent(params.row.control_number)} 
+        <Box
+          display="flex"
+          gap="10px"
         >
-          Ver Detalles
-        </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            onClick={() => goToStudent(params.row.control_number)}
+          >
+            Ver Detalles
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            size="small"
+            onClick={() => confirmDelete(params.row)}
+          >
+            Eliminar
+          </Button>
+        </Box>
       ),
     },
   ];
@@ -61,23 +85,53 @@ const Team = () => {
     nav(`/useredit/${id}`);
   };
 
+  const handleConfirmDelete = async () => {
+    if (!selectedStudent) return;
+
+    setLoading(true);
+    try {
+      await api.delete(`/api/${selectedStudent.control_number}`);
+      setStudents((prev) =>
+        prev.filter(
+          (student) => student.control_number !== selectedStudent.control_number
+        )
+      );
+    } catch (error) {
+      console.error('Error al eliminar el estudiante:', error);
+    } finally {
+      setLoading(false);
+      setOpenDialog(false);
+      setSelectedStudent(null); 
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setOpenDialog(false); 
+    setSelectedStudent(null); 
+  };
+
+  const confirmDelete = (student) => {
+    setSelectedStudent(student);
+    setOpenDialog(true); 
+  };
+
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await api.get('api'); 
-        const studentsData = response.data.map(student => ({
-          id: student._id, 
+        const response = await api.get('api');
+        const studentsData = response.data.map((student) => ({
+          id: student._id,
           ...student,
         }));
-        setStudents(studentsData); 
+        setStudents(studentsData);
       } catch (error) {
         console.error('Error fetching students:', error);
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     };
 
-    fetchStudents(); 
+    fetchStudents();
   }, []);
 
   if (loading) {
@@ -86,42 +140,45 @@ const Team = () => {
 
   return (
     <Box m="20px">
-      <Header title="Egresados" subtitle="Datos de los egresados" />
+      <Header
+        title="Egresados"
+        subtitle="Datos de los egresados"
+      />
       <Box
         mt="40px"
         height="75vh"
         flex={1}
         sx={{
-          "& .MuiDataGrid-root": {
-            border: "none",
+          '& .MuiDataGrid-root': {
+            border: 'none',
           },
-          "& .MuiDataGrid-cell": {
-            border: "none",
+          '& .MuiDataGrid-cell': {
+            border: 'none',
           },
-          "& .name-column--cell": {
+          '& .name-column--cell': {
             color: colors.primary[100],
           },
-          "& .MuiDataGrid-columnHeaders": {
+          '& .MuiDataGrid-columnHeaders': {
             backgroundColor: colors.orange[500],
-            borderBottom: "none",
+            borderBottom: 'none',
           },
-          "& .MuiDataGrid-virtualScroller": {
+          '& .MuiDataGrid-virtualScroller': {
             backgroundColor: colors.primary[400],
           },
-          "& .MuiDataGrid-footerContainer": {
-            borderTop: "none",
+          '& .MuiDataGrid-footerContainer': {
+            borderTop: 'none',
             backgroundColor: colors.orange[500],
           },
-          "& .MuiCheckbox-root": {
+          '& .MuiCheckbox-root': {
             color: `${colors.orange[400]} !important`,
           },
-          "& .MuiDataGrid-iconSeparator": {
+          '& .MuiDataGrid-iconSeparator': {
             color: colors.primary[100],
           },
         }}
       >
         <DataGrid
-          rows={students} 
+          rows={students}
           columns={columns}
           initialState={{
             pagination: {
@@ -130,9 +187,35 @@ const Team = () => {
               },
             },
           }}
-          // checkboxSelection
         />
       </Box>
+
+      <Dialog
+        open={openDialog}
+        onClose={handleCancelDelete}
+      >
+        <DialogTitle>Confirmar eliminación</DialogTitle>
+        <DialogContent>
+          <Typography>
+            ¿Estás seguro de que deseas eliminar a {selectedStudent?.name?.first}{' '}
+            {selectedStudent?.name?.last}? Esta acción no se puede deshacer.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleCancelDelete}
+            color="secondary"
+          >
+            Cancelar
+          </Button>
+          <Button
+            onClick={handleConfirmDelete}
+            color="primary"
+          >
+            Confirmar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

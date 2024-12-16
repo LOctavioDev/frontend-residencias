@@ -17,19 +17,19 @@ const BarChart = ({ isDashboard = false }) => {
       const transformedData = [
         {
           type: 'Trabaja',
-          cantidad: response.data.working || 0,
+          Cantidad: response.data.working || 0,
         },
         {
           type: 'No trabaja',
-          cantidad: response.data.notWorking || 0,
+          Cantidad: response.data.notWorking || 0,
         },
         {
           type: 'Estudia',
-          cantidad: response.data.studying || 0,
+          Cantidad: response.data.studying || 0,
         },
         {
           type: 'No estudia ni trabaja',
-          cantidad: response.data.notStudying || 0,
+          Cantidad: response.data.notStudying || 0,
         },
       ];
       setData(transformedData);
@@ -73,7 +73,7 @@ const BarChart = ({ isDashboard = false }) => {
           },
         },
       }}
-      keys={['cantidad']}
+      keys={['Cantidad']}
       indexBy="type" // Usamos "type" porque es el nombre del campo que contiene las categorías
       margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
       padding={0.3}
