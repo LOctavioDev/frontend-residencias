@@ -13,6 +13,7 @@ const BarChart = () => {
     const fetchData = async () => {
       try {
         const response = await api.get('api/students/generation');
+        console.log(response.data);
         const formattedData = formatDataForBarChart(response.data);
         setData(formattedData);
       } catch (error) {
@@ -24,10 +25,12 @@ const BarChart = () => {
   }, []);
 
   const formatDataForBarChart = (studentsData) => {
-    // Formateamos los datos para el gráfico de barras
+    const total = studentsData.reduce((sum, item) => sum + item.count, 0); 
+
     return studentsData.map((item) => ({
-      year: item._id?.year || 'Sin año', // Etiqueta 'Sin año' para valores null
-      númeroDeEstudiantes: item.count, // Cambiamos 'count' por 'númeroDeEstudiantes'
+      year: item._id?.year || 'Sin año',
+      númeroDeEstudiantes: item.count,
+      porcentaje: ((item.count / total) * 100).toFixed(2), 
     }));
   };
 
@@ -86,6 +89,12 @@ const BarChart = () => {
       colors={{ scheme: 'nivo' }}
       fillOpacity={0.85}
       borderColor={{ theme: 'background' }}
+      label={(bar) => `${bar.data.porcentaje}%`} // Mostrar el porcentaje en cada barra
+      labelSkipHeight={12}
+      labelTextColor={{
+        from: 'color',
+        modifiers: [['darker', 1.6]],
+      }}
       legends={[
         {
           anchor: 'bottom-right',

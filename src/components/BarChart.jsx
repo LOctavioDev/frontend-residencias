@@ -14,22 +14,40 @@ const BarChart = ({ isDashboard = false }) => {
   const fetchData = async () => {
     try {
       const response = await api.get('api/students/activity');
+      const totalStudents =
+        response.data.working.count +
+        response.data.notWorking.count +
+        response.data.studying.count +
+        response.data.notStudying.count;
+
       const transformedData = [
         {
           type: 'Trabaja',
-          Cantidad: response.data.working || 0,
+          Cantidad: response.data.working.count || 0,
+          percentage: totalStudents
+            ? ((response.data.working.count / totalStudents) * 100).toFixed(2)
+            : '0',
         },
         {
           type: 'No trabaja',
-          Cantidad: response.data.notWorking || 0,
+          Cantidad: response.data.notWorking.count || 0,
+          percentage: totalStudents
+            ? ((response.data.notWorking.count / totalStudents) * 100).toFixed(2)
+            : '0',
         },
         {
           type: 'Estudia',
-          Cantidad: response.data.studying || 0,
+          Cantidad: response.data.studying.count || 0,
+          percentage: totalStudents
+            ? ((response.data.studying.count / totalStudents) * 100).toFixed(2)
+            : '0',
         },
         {
           type: 'No estudia ni trabaja',
-          Cantidad: response.data.notStudying || 0,
+          Cantidad: response.data.notStudying.count || 0,
+          percentage: totalStudents
+            ? ((response.data.notStudying.count / totalStudents) * 100).toFixed(2)
+            : '0',
         },
       ];
       setData(transformedData);
@@ -74,7 +92,7 @@ const BarChart = ({ isDashboard = false }) => {
         },
       }}
       keys={['Cantidad']}
-      indexBy="type" // Usamos "type" porque es el nombre del campo que contiene las categorías
+      indexBy="type"
       margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
       padding={0.3}
       valueScale={{ type: 'linear' }}
@@ -155,8 +173,22 @@ const BarChart = ({ isDashboard = false }) => {
       ]}
       role="application"
       barAriaLabel={function (e) {
-        return e.id + ': ' + e.formattedValue + ' en tipo: ' + e.indexValue;
+        return (
+          e.id +
+          ': ' +
+          e.formattedValue +
+          ' en tipo: ' +
+          e.indexValue +
+          ', porcentaje: ' +
+          e.data.percentage +
+          '%'
+        );
       }}
+      tooltip={({ id, value, data }) => (
+        <div>
+          <strong>{id}</strong>: {value} ( {data.percentage}% )
+        </div>
+      )}
     />
   );
 };

@@ -24,6 +24,10 @@ import {
   sectorOptions,
   participationTypeOptions,
   updateAtOptions,
+  tituloOptions,
+  postgradeOptions,
+  genderOptions,
+  maritalStatusOptions,
 } from '../../services/Titles';
 
 const UserEdit = () => {
@@ -58,8 +62,30 @@ const UserEdit = () => {
         activity: {
           activities: [values.activity],
         },
+        birthdate: convertDateToUnix(values.birthDate),
+        curp: values.curp,
+        marital_status: values.marital_status,
+        gender: values.gender,
+        home_address: values.home_address,
+        cp: values.cp,
+        student_city: values.student_city,
+        student_municipality: values.student_municipality,
+        student_state: values.student_state,
+        phone: values.phone,
+        certificate: values.certificate,
+        graduation_date: convertDateToUnix(values.graduation_date),
+        graduation_option: values.graduation_option,
+        post_graduation: values.post_graduation,
         company: {
           name: values.companyName,
+          boss_name: values.boss_name,
+          boss_position: values.boss_position,
+          company_address: values.company_address,
+          company_cp: values.company_cp,
+          company_phone: values.company_phone,
+          fax: values.fax,
+          company_email: values.company_email,
+          salary: values.salary,
           location: {
             city: values.city,
             municipality: values.municipality,
@@ -77,7 +103,7 @@ const UserEdit = () => {
         profile: values.profile,
         contact_source:
           values.contactSource === 'otro' ? values.otherSource : values.contactSource,
-        updatedAt: values.updatedAt,
+        studentAt: values.studentAt,
       };
 
       const response = await api.put(`/api/${values.controlNumber}`, payload);
@@ -112,8 +138,8 @@ const UserEdit = () => {
     const fetchUserData = async () => {
       try {
         const response = await api.get(`api/${control_number}`);
-        setUserData(response.data);
         console.log(response.data);
+        setUserData(response.data);
         setContactSourceOriginal(response.data.contact_source);
       } catch (err) {
         setError('Error al cargar los datos del usuario.');
@@ -151,6 +177,22 @@ const UserEdit = () => {
             : '',
           email: userData?.email || '',
           activity: userData?.activity?.activities[0] || '',
+          birthDate: userData?.birthdate ? convertUnixToDate(userData?.birthdate) : '',
+          curp: userData?.curp || '',
+          marital_status: userData?.marital_status || '',
+          gender: userData?.gender || '',
+          home_address: userData?.home_address || '',
+          cp: userData?.cp || '',
+          student_city: userData?.student_city || '',
+          student_municipality: userData?.student_municipality || '',
+          student_state: userData?.student_state || '',
+          phone: userData?.phone || '',
+          certificate: userData?.certificate || '',
+          graduation_date: userData?.graduation_date
+            ? convertUnixToDate(userData?.graduation_date)
+            : '',
+          graduation_option: userData?.graduation_option || '',
+          post_graduation: userData?.post_graduation || '',
           companyName: userData?.company?.name || '',
           city: userData?.company?.location?.city || '',
           municipality: userData?.company?.location?.municipality || '',
@@ -158,8 +200,16 @@ const UserEdit = () => {
           position: userData?.company?.position || '',
           yearsInPosition: userData?.company?.years_in_position || '',
           hierarchical_level: userData?.company?.hierarchical_level || '',
-          startDateC: userData?.company?.startDateC || '',
-          endDateC: userData?.company?.endDateC || '',
+          boss_name: userData?.company?.boss_name || '',
+          boss_position: userData?.company?.boss_position || '',
+          company_address: userData?.company?.company_address || '',
+          company_cp: userData?.company?.company_cp || '',
+          company_phone: userData?.company?.company_phone || '',
+          fax: userData?.company?.fax || '',
+          company_email: userData?.company?.company_email || '',
+          salary: userData?.company?.salary || '',
+          // startDateC: userData?.company?.startDateC || '',
+          // endDateC: userData?.company?.endDateC || '',
           name: userData?.companyHistory?.name || '',
           startDateH: userData?.companyHistory?.startDateH || '',
           endDateH: userData?.companyHistory?.endDateH || '',
@@ -169,7 +219,8 @@ const UserEdit = () => {
           profile: userData?.profile || '',
           contactSource: userData?.contact_source || '',
           otherSource: userData?.contact_source || '',
-          updatedAt: userData?.updatedAt || '',
+          studentAt: userData?.studentAt || '',
+          updateAt: userData?.updatedAt || '',
         }}
         validationSchema={editUserSchema}
         onSubmit={(values) => {
@@ -195,6 +246,24 @@ const UserEdit = () => {
                 value={values.controlNumber}
                 onChange={handleChange}
                 disabled
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                label="Última Actualización"
+                value={
+                  userData && userData.updatedAt
+                    ? new Date(userData.updatedAt).toLocaleString()
+                    : 'No disponible'
+                }
+                disabled
+                InputProps={{
+                  readOnly: true,
+                }}
+                sx={{
+                  backgroundColor: '#f0f0f0',
+                  color: '#000',
+                }}
               />
               <TextField
                 fullWidth
@@ -291,6 +360,200 @@ const UserEdit = () => {
               <TextField
                 fullWidth
                 variant="filled"
+                label="Fecha de nacimiento"
+                name="birthDate"
+                type="date"
+                value={values.birthDate}
+                onChange={(e) => setFieldValue('birthDate', e.target.value)}
+                error={touched.birthDate && Boolean(errors.birthDate)}
+                helperText={touched.birthDate && errors.birthDate}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                label="CURP"
+                name="curp"
+                value={values.curp}
+                onChange={handleChange}
+                error={touched.curp && Boolean(errors.curp)}
+                helperText={touched.curp && errors.curp}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                label="Estado Civil"
+                name="marital_status"
+                value={values.marital_status}
+                onChange={handleChange}
+                select
+                error={touched.marital_status && Boolean(errors.marital_status)}
+                helperText={touched.marital_status && errors.marital_status}
+              >
+                {maritalStatusOptions.map((option) => (
+                  <MenuItem
+                    key={option.value}
+                    value={option.value}
+                  >
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+
+              <TextField
+                fullWidth
+                variant="filled"
+                label="Genero"
+                name="gender"
+                value={values.gender}
+                onChange={handleChange}
+                select
+                error={touched.gender && Boolean(errors.gender)}
+                helperText={touched.gender && errors.gender}
+              >
+                {genderOptions.map((option) => (
+                  <MenuItem
+                    key={option.value}
+                    value={option.value}
+                  >
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+
+              <TextField
+                fullWidth
+                variant="filled"
+                label="Domicilio"
+                name="home_address"
+                value={values.home_address}
+                onChange={handleChange}
+                error={touched.home_address && Boolean(errors.home_address)}
+                helperText={touched.home_address && errors.home_address}
+              />
+
+              <TextField
+                fullWidth
+                variant="filled"
+                label="Código Postal"
+                name="cp"
+                value={values.cp}
+                onChange={handleChange}
+                error={touched.cp && Boolean(errors.cp)}
+                helperText={touched.cp && errors.cp}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                label="Ciudad de residencia"
+                name="student_city"
+                value={values.student_city}
+                onChange={handleChange}
+                error={touched.student_city && Boolean(errors.student_city)}
+                helperText={touched.student_city && errors.student_city}
+              />
+
+              <TextField
+                fullWidth
+                variant="filled"
+                label="Municipio de residencia"
+                name="student_municipality"
+                value={values.student_municipality}
+                onChange={handleChange}
+                error={
+                  touched.student_municipality && Boolean(errors.student_municipality)
+                }
+                helperText={touched.student_municipality && errors.student_municipality}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                label="Estado de residencia"
+                name="student_state"
+                value={values.student_state}
+                onChange={handleChange}
+                error={touched.student_state && Boolean(errors.student_state)}
+                helperText={touched.student_state && errors.student_state}
+              />
+
+              <TextField
+                fullWidth
+                variant="filled"
+                label="Número de teléfono"
+                name="phone"
+                value={values.phone}
+                onChange={handleChange}
+                error={touched.phone && Boolean(errors.phone)}
+                helperText={touched.phone && errors.phone}
+              />
+
+              <TextField
+                fullWidth
+                variant="filled"
+                label="Titulados"
+                name="certificate"
+                value={values.certificate}
+                onChange={handleChange}
+                select
+                error={touched.certificate && Boolean(errors.certificate)}
+                helperText={touched.certificate && errors.certificate}
+              >
+                {tituloOptions.map((option) => (
+                  <MenuItem
+                    key={option.value}
+                    value={option.value}
+                  >
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+
+              <TextField
+                fullWidth
+                variant="filled"
+                label="Fecha de graduación"
+                name="graduation_date"
+                type="date"
+                value={values.graduation_date}
+                onChange={(e) => setFieldValue('graduation_date', e.target.value)}
+                error={touched.graduation_date && Boolean(errors.graduation_date)}
+                helperText={touched.graduation_date && errors.graduation_date}
+              />
+
+              <TextField
+                fullWidth
+                variant="filled"
+                label="Postgrado"
+                name="postgrade"
+                value={values.postgrade}
+                onChange={handleChange}
+                select
+                error={touched.postgrade && Boolean(errors.postgrade)}
+                helperText={touched.postgrade && errors.postgrade}
+              >
+                {postgradeOptions.map((option) => (
+                  <MenuItem
+                    key={option.value}
+                    value={option.value}
+                  >
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+
+              <TextField
+                fullWidth
+                variant="filled"
+                label="Opcion de titulación"
+                name="graduation_option"
+                value={values.graduation_option}
+                onChange={handleChange}
+                error={touched.graduation_option && Boolean(errors.graduation_option)}
+                helperText={touched.graduation_option && errors.graduation_option}
+              />
+
+              <TextField
+                fullWidth
+                variant="filled"
                 label="Empresa"
                 name="companyName"
                 value={values.companyName}
@@ -298,6 +561,96 @@ const UserEdit = () => {
                 error={touched.companyName && Boolean(errors.companyName)}
                 helperText={touched.companyName && errors.companyName}
               />
+
+              <TextField
+                fullWidth
+                variant="filled"
+                label="Nombre del jefe inmediato"
+                name="boss_name"
+                value={values.boss_name}
+                onChange={handleChange}
+                error={touched.boss_name && Boolean(errors.boss_name)}
+                helperText={touched.boss_name && errors.boss_name}
+              />
+
+              <TextField
+                fullWidth
+                variant="filled"
+                label="Posición del jefe inmediato"
+                name="boss_position"
+                value={values.boss_position}
+                onChange={handleChange}
+                error={touched.boss_position && Boolean(errors.boss_position)}
+                helperText={touched.boss_position && errors.boss_position}
+              />
+
+              <TextField
+                fullWidth
+                variant="filled"
+                label="Dirección de la empresa"
+                name="company_address"
+                value={values.company_address}
+                onChange={handleChange}
+                error={touched.company_address && Boolean(errors.company_address)}
+                helperText={touched.company_address && errors.company_address}
+              />
+
+              <TextField
+                fullWidth
+                variant="filled"
+                label="CP"
+                name="cp"
+                value={values.cp}
+                onChange={handleChange}
+                error={touched.cp && Boolean(errors.cp)}
+                helperText={touched.cp && errors.cp}
+              />
+
+              <TextField
+                fullWidth
+                variant="filled"
+                label="Teléfono de la empresa"
+                name="company_phone"
+                value={values.company_phone}
+                onChange={handleChange}
+                error={touched.company_phone && Boolean(errors.company_phone)}
+                helperText={touched.company_phone && errors.company_phone}
+              />
+
+              <TextField
+                fullWidth
+                variant="filled"
+                label="Fax"
+                name="fax"
+                value={values.fax}
+                onChange={handleChange}
+                error={touched.fax && Boolean(errors.fax)}
+                helperText={touched.fax && errors.fax}
+              />
+
+              <TextField
+                fullWidth
+                variant="filled"
+                label="Correo de la empresa"
+                name="company_email"
+                value={values.company_email}
+                onChange={handleChange}
+                error={touched.company_email && Boolean(errors.company_email)}
+                helperText={touched.company_email && errors.company_email}
+              />
+
+              <TextField
+                fullWidth
+                variant="filled"
+                label="Salario"
+                name="salary"
+                type="number"
+                value={values.salary}
+                onChange={handleChange}
+                error={touched.salary && Boolean(errors.salary)}
+                helperText={touched.salary && errors.salary}
+              />
+
               <TextField
                 fullWidth
                 variant="filled"
@@ -500,13 +853,13 @@ const UserEdit = () => {
               <TextField
                 fullWidth
                 variant="filled"
-                label="Fecha de actualización"
-                name="updatedAt"
+                label="Alumnos actualizados"
+                name="studentAt"
                 onChange={handleChange}
                 select
-                value={values.updatedAt}
-                error={touched.updatedAt && Boolean(errors.updatedAt)}
-                helperText={touched.updatedAt && errors.updatedAt}
+                value={values.studentAt}
+                error={touched.studentAt && Boolean(errors.studentAt)}
+                helperText={touched.studentAt && errors.studentAt}
               >
                 {updateAtOptions.map((option) => (
                   <MenuItem

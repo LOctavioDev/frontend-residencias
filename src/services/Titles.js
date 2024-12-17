@@ -58,11 +58,35 @@ export const sectorOptions = [
   { label: 'Primario', value: 'primario' },
   { label: 'Secundario', value: 'secundario' },
   { label: 'Terciario', value: 'terciario' },
-
-]
+];
 
 export const updateAtOptions = [
   { label: 'contactados laborando', value: 'contactados laborando' },
   { label: 'actualizados', value: 'actualizados' },
   { label: 'no contactados ni actualizados', value: 'no contactados ni actualizados' },
-]
+];
+
+export const tituloOptions = [
+  { label: 'si', value: 'si' },
+  { label: 'no', value: 'no' },
+  { label: 'proceso', value: 'proceso' },
+];
+
+export const postgradeOptions = [
+  { label: 'Especial', value: 'especial' },
+  { label: 'Diplomado', value: 'diplomado' },
+  { label: 'Maestría', value: 'maestria' },
+  { label: 'Doctorado', value: 'doctorado' },
+];
+
+export const genderOptions = [
+  { label: 'Masculino', value: 'masculino' },
+  { label: 'Femenino', value: 'femenino' },
+];
+
+export const maritalStatusOptions = [
+  { label: 'Soltero', value: 'soltero' },
+  { label: 'Casado', value: 'casado' },
+  { label: 'Divorciado', value: 'divorciado' },
+  { label: 'Viudo', value: 'viudo' },
+];

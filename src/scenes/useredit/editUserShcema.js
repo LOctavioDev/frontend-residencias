@@ -11,6 +11,38 @@ const editUserSchema = yup.object().shape({
     .email('Correo electronico no válido')
     .required('Correo electrónico es requerido'),
   activity: yup.string().required('Actividad es requerida'),
+  birthDate: yup.date().nullable().required('Fecha de nacimiento es requerida'),
+  curp: yup
+    .string()
+    .max(18, 'CURP debe tener 18 caracteres')
+    .required('CURP es requerido'),
+  marital_status: yup.string().required('Estado civil es requerido'),
+  gender: yup.string().required('Genero es requerido'),
+  home_address: yup.string().required('Direccion de residencia es requerida'),
+  cp: yup.string().required('Código postal es requerido'),
+  student_city: yup.string().required('Ciudad es requerida'),
+  student_municipality: yup.string().required('Municipio es requerido'),
+  student_state: yup.string().required('Estado es requerido'),
+  phone: yup.string().required('Telefono es requerido'),
+  certificate: yup.string().required('Certificado es requerido'),
+  graduation_date: yup.date().nullable().required('Fecha de graduación es requerida'),
+  graduation_option: yup.string().required('Opcion de graduación es requerida'),
+  post_graduation: yup.string().required('Post graduación es requerida'),
+  boss_name: yup.string().required('Nombre del jefe es requerido'),
+  boss_position: yup.string().required('Posición del jefe es requerido'),
+  company_address: yup.string().required('Direccion de la empresa es requerida'),
+  company_cp: yup.string().required('Código postal es requerido'),
+  company_phone: yup.string().required('Telefono de la empresa es requerido'),
+  fax: yup.string().required('Fax es requerido'),
+  company_email: yup
+    .string()
+    .email('Correo electronico no válido')
+    .required('Correo de la empresa es requerido'),
+  salary: yup
+    .number()
+    .min(0, 'El salario debe ser mayor o igual a 0')
+    .transform((value) => parseFloat(value))
+    .required('Salario es requerido'),
   companyName: yup.string().required('Nombre de la empresa es requerido'),
   city: yup.string().required('Ciudad es requerida'),
   municipality: yup.string().required('Municipio es requerido'),
@@ -35,7 +67,7 @@ const editUserSchema = yup.object().shape({
       }
       return schema.notRequired();
     }),
-  updatedAt: yup.string().nullable().required('Fecha de actualización es requerida'),
+  studentAt: yup.string().nullable().required('Alumnos actualizados es requerida'),
 });
 
 export default editUserSchema;

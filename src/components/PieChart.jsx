@@ -14,11 +14,12 @@ const PieChart = () => {
       const response = await api.get('api/students/city');
       console.log(response.data);
 
-      // Mapea los datos de la respuesta para ajustarlos al formato requerido por Nivo
+
       const filteredData = response.data.map((item) => ({
-        id: item._id || 'Sin ciudad', // Si el _id es null, lo etiquetamos como "Sin ciudad"
+        id: item._id || 'Sin ciudad', 
         label: item._id || 'Sin ciudad',
         value: item.count,
+        percentage: item.percentage,
       }));
 
       setData(filteredData);
@@ -75,13 +76,14 @@ const PieChart = () => {
       arcLinkLabelsTextColor={colors.gray[100]}
       arcLinkLabelsThickness={2}
       arcLinkLabelsColor={{ from: 'color' }}
-      enableArcLabels={false}
-      arcLabelsRadiusOffset={0.4}
-      arcLabelsSkipAngle={7}
+      enableArcLabels={true}
+      arcLabelsRadiusOffset={0.5}
+      arcLabelsSkipAngle={10}
       arcLabelsTextColor={{
         from: 'color',
         modifiers: [['darker', 2]],
       }}
+      arcLabel={(e) => `${((e.value / data.reduce((sum, item) => sum + item.value, 0)) * 100).toFixed(2)}%`}
       defs={[
         {
           id: 'dots',
