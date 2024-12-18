@@ -56,7 +56,7 @@ const initialValues = {
   municipality: '',
   state: '',
   position: '',
-  yearsInPosition: '', 
+  yearsInPosition: '',
   hierarchical_level: '',
   name: '',
   boss_name: '',
@@ -75,7 +75,7 @@ const initialValues = {
   profile: '',
   contactSource: '',
   otherSource: '',
-  studentAt: '', 
+  studentAt: '',
 };
 
 const checkoutSchema = yup.object().shape({
@@ -105,7 +105,7 @@ const checkoutSchema = yup.object().shape({
   student_state: yup.string().required('Estado es requerido'),
   phone: yup.string().required('Telefono es requerido'),
   certificate: yup.string().required('Certificado es requerido'),
-  graduation_date: yup.date().nullable().required('Fecha de graduación es requerida'),
+  graduation_date: yup.date().nullable().required('Fecha de titulacion es requerida'),
   graduation_option: yup.string().required('Opcion de graduación es requerida'),
   post_graduation: yup.string().required('Post graduación es requerida'),
   boss_name: yup.string().required('Nombre del jefe es requerido'),
@@ -115,14 +115,13 @@ const checkoutSchema = yup.object().shape({
   company_phone: yup.string().required('Telefono de la empresa es requerido'),
   fax: yup.string().required('Fax es requerido'),
   company_email: yup
-  .string()
-  .email('Correo electronico no válido')
-  .required('Correo de la empresa es requerido'),
+    .string()
+    .email('Correo electronico no válido')
+    .required('Correo de la empresa es requerido'),
   salary: yup
-  .number()
-  .min(0, 'El salario debe ser mayor o igual a 0')
-  .transform((value) => parseFloat(value))
-  .required('Salario es requerido'),
+    .string()
+    .min(0, 'El salario debe ser mayor o igual a 0')
+    .required('Salario es requerido'),
   companyName: yup.string().required('Nombre de la empresa es requerido'),
   city: yup.string().required('Ciudad es requerida'),
   municipality: yup.string().required('Municipio es requerido'),
@@ -146,7 +145,7 @@ const checkoutSchema = yup.object().shape({
       }
       return schema.notRequired();
     }),
-    studentAt: yup.string().nullable().required('Fecha de actualización es requerida'),
+  studentAt: yup.string().nullable().required('Fecha de actualización es requerida'),
 });
 
 const StudentForm = () => {
@@ -227,7 +226,7 @@ const StudentForm = () => {
         profile: values.profile,
         contact_source:
           values.contactSource === 'otro' ? values.otherSource : values.contactSource,
-          studentAt: values.studentAt,
+        studentAt: values.studentAt,
       };
 
       console.log(payload);
@@ -565,7 +564,7 @@ const StudentForm = () => {
               </TextField>
 
               <TextField
-                label="Fecha de graduación"
+                label="Fecha de titulación"
                 name="graduation_date"
                 type="date"
                 value={values.graduation_date}
@@ -805,7 +804,6 @@ const StudentForm = () => {
                 variant="filled"
                 label="Salario"
                 name="salary"
-                type="number"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values.salary}

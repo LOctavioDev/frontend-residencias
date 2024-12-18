@@ -39,9 +39,8 @@ const editUserSchema = yup.object().shape({
     .email('Correo electronico no válido')
     .required('Correo de la empresa es requerido'),
   salary: yup
-    .number()
+    .string()
     .min(0, 'El salario debe ser mayor o igual a 0')
-    .transform((value) => parseFloat(value))
     .required('Salario es requerido'),
   companyName: yup.string().required('Nombre de la empresa es requerido'),
   city: yup.string().required('Ciudad es requerida'),

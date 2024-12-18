@@ -104,6 +104,7 @@ const UserEdit = () => {
         contact_source:
           values.contactSource === 'otro' ? values.otherSource : values.contactSource,
         studentAt: values.studentAt,
+        updatedAt: values.updateAt,
       };
 
       const response = await api.put(`/api/${values.controlNumber}`, payload);
@@ -251,20 +252,20 @@ const UserEdit = () => {
                 fullWidth
                 variant="filled"
                 label="Última Actualización"
+                name="updateAt"
+                type="date"
+                onChange={(e) => setFieldValue('updateAt', e.target.value)}
                 value={
-                  userData && userData.updatedAt
-                    ? new Date(userData.updatedAt).toLocaleString()
-                    : 'No disponible'
+                  values.updateAt
+                    ? new Date(values.updateAt).toISOString().split('T')[0]
+                    : ''
                 }
-                disabled
-                InputProps={{
-                  readOnly: true,
-                }}
                 sx={{
                   backgroundColor: '#f0f0f0',
                   color: '#000',
                 }}
               />
+
               <TextField
                 fullWidth
                 variant="filled"
@@ -510,7 +511,7 @@ const UserEdit = () => {
               <TextField
                 fullWidth
                 variant="filled"
-                label="Fecha de graduación"
+                label="Fecha de titulación"
                 name="graduation_date"
                 type="date"
                 value={values.graduation_date}
@@ -644,7 +645,6 @@ const UserEdit = () => {
                 variant="filled"
                 label="Salario"
                 name="salary"
-                type="number"
                 value={values.salary}
                 onChange={handleChange}
                 error={touched.salary && Boolean(errors.salary)}
@@ -804,7 +804,7 @@ const UserEdit = () => {
               <TextField
                 fullWidth
                 variant="filled"
-                label="Fuente de contacto original"
+                label="Trabajo obtenido de actual"
                 value={contact_source_original}
                 onChange={handleChange}
                 disabled
@@ -812,7 +812,7 @@ const UserEdit = () => {
               <TextField
                 fullWidth
                 variant="filled"
-                label="Fuente de contacto"
+                label="Trabajo obtenido de"
                 name="contactSource"
                 value={values.contactSource}
                 onChange={(e) => {

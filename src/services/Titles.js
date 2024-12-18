@@ -44,6 +44,7 @@ export const participationTypeOptions = [
 export const contactSourceOptions = [
   { label: 'Bolsa de trabajo ITSH', value: 'bolsa de trabajo' },
   { label: 'Contactos personales', value: 'contatcos personales' },
+  { label: 'Residencia profesional', value: 'residencia profesional' },
   { label: 'Otro', value: 'otro' },
 ];
 
@@ -89,4 +90,5 @@ export const maritalStatusOptions = [
   { label: 'Casado', value: 'casado' },
   { label: 'Divorciado', value: 'divorciado' },
   { label: 'Viudo', value: 'viudo' },
+  { label: 'Union libre', value: 'union libre' },
 ];
