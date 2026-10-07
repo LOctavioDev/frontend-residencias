@@ -8,6 +8,8 @@ import {
   Paper,
   CircularProgress,
   Snackbar,
+  TextField,
+  Divider,
 } from '@mui/material';
 import { Google } from '@mui/icons-material';
 import { AuthContext } from '../context/AuthContext';
@@ -19,7 +21,31 @@ export const Login = () => {
   const [loading, setLoading] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const nav = useNavigate();
+
+  const handleEmailLogin = async (event) => {
+    event.preventDefault();
+    setLoading(true);
+    try {
+      const res = await axios.post(`${API_URL}auth/login`, { email, password });
+
+      const { token, user } = res.data;
+      login(token);
+      localStorage.setItem('user', JSON.stringify(user));
+
+      setLoading(false);
+      nav('/');
+    } catch (error) {
+      console.error('Error during email login:', error);
+      setLoading(false);
+      setSnackbarMessage(
+        error.response?.data?.error || 'Error durante la autenticación. Intenta de nuevo.'
+      );
+      setSnackbarOpen(true);
+    }
+  };
 
   const handleLoginSuccess = async (response) => {
     const { credential } = response;
@@ -96,8 +122,43 @@ export const Login = () => {
             gutterBottom
             sx={{ mb: 3 }}
           >
-            Ingresa usando tu cuenta de Google
+            Ingresa con tu correo y contraseña
           </Typography>
+
+          <Box component="form" onSubmit={handleEmailLogin} sx={{ textAlign: 'left' }}>
+            <TextField
+              label="Correo electrónico"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
+              required
+              fullWidth
+              margin="normal"
+            />
+            <TextField
+              label="Contraseña"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete="current-password"
+              required
+              fullWidth
+              margin="normal"
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={loading}
+              fullWidth
+              sx={{ marginTop: 2, height: 48, textTransform: 'none', fontSize: '1rem' }}
+            >
+              Iniciar sesión
+            </Button>
+          </Box>
+
+          <Divider sx={{ my: 3 }}>o</Divider>
 
           {loading ? (
             <CircularProgress sx={{ my: 2 }} />
